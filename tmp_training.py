@@ -32,7 +32,8 @@ def main():
 
     # IXI dataset as a demo, downloadable from https://brain-development.org/ixi-dataset/
     # the path of ixi IXI-T1 dataset
-    data_path = '/Users/ahmedelgazzar/Downloads/brain_toy/toy/*.gz'
+    on_local = False
+    data_path = '/Users/ahmedelgazzar/Downloads/brain_toy/toy/*.gz' if on_local else '/data_local/deeplearning/Datasets/MOOD/brain_train/*.gz'
     all_images = glob.glob(data_path)
     show_sample = False
 
@@ -106,7 +107,7 @@ def main():
         for inputs,labels in train_loader:
             step += 1
             inputs = inputs.to(device)
-            labels = labels.to(device).type(torch.LongTensor)
+            labels = labels.type(torch.LongTensor).to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
@@ -128,7 +129,7 @@ def main():
         for inputs,labels in val_loader:
             step += 1
             val_images = inputs.to(device)
-            val_labels = labels.to(device).type(torch.LongTensor)
+            val_labels = labels.type(torch.LongTensor).to(device)
             val_outputs = model(val_images)
             value = torch.eq(val_outputs.argmax(dim=1), val_labels)
             metric_count += len(value)
